@@ -175,10 +175,13 @@
   .about .eyebrow::before{background:var(--blue-light);}
   .about h2{color:var(--white);}
   .about p{color:#B8C4DA;font-size:1rem;margin-bottom:16px;max-width:480px;}
-  .about-stats{display:grid;grid-template-columns:1fr 1fr;gap:24px 32px;padding-top:8px;}
-  .stat{border-top:1px solid rgba(255,255,255,0.15);padding-top:16px;}
+  .about-stats{display:grid;grid-template-columns:1fr 1fr;gap:0;padding-top:8px;}
+  .stat{padding:24px 32px 24px 0;}
+  .stat:nth-child(-n+2){padding-top:0;}
+  .stat:nth-child(2n){border-left:1px solid rgba(255,255,255,0.15);padding-left:32px;padding-right:0;}
+  .stat:nth-child(n+3){border-top:1px solid rgba(255,255,255,0.15);}
   .stat b{
-    display:block;font-family:var(--display);font-size:1.8rem;color:var(--white);font-weight:700;
+    display:block;font-family:var(--display);font-size:1.3rem;color:var(--white);font-weight:600;margin-bottom:6px;
   }
   .stat span{font-size:0.85rem;color:#8FA1C2;}
 
@@ -353,14 +356,15 @@
     <div>
       <div class="eyebrow">Quem faz</div>
       <h2>Arquitetura, urbanismo e sistemas, na mesma mesa</h2>
-      <p>A Vértice4 nasceu da prática técnica em aprovação de projetos e regularização fundiária em Dourados-MS. O mesmo processo que hoje roda em planilha e papel virou um sistema — sem trocar a responsabilidade técnica por trás dele.</p>
-      <p>Atendimento direto, sem intermediário comercial: quem levanta os vértices é quem acompanha o processo até o registro.</p>
+      <p>A Vértice4 une arquitetura, geografia e sistemas aplicados à aprovação de projetos e à regularização fundiária em Dourados e região.</p>
+      <p>Nossa equipe reúne arquitetos e geógrafos, que trabalham de forma integrada para entregar soluções técnicas completas.</p>
+      <p>Atendimento técnico direto, sem intermediários comerciais: do estudo inicial ao registro, acompanhamos cada etapa do processo com responsabilidade e precisão.</p>
     </div>
     <div class="about-stats">
-      <div class="stat"><b>560</b><span>lotes acompanhados no piloto Ouro Branco Residence</span></div>
+      <div class="stat"><b>Arquitetos</b><span>projetos, aprovação e visão técnica</span></div>
       <div class="stat"><b>SIRGAS 2000</b><span>referência geodésica oficial</span></div>
-      <div class="stat"><b>MBA</b><span>em sistemas estruturais aplicado ao território</span></div>
-      <div class="stat"><b>Dourados-MS</b><span>atuação e conhecimento local</span></div>
+      <div class="stat"><b>Geógrafos</b><span>cartografia, território e base cadastral</span></div>
+      <div class="stat"><b>Dourados e região</b><span>atuação local com visão para o Brasil</span></div>
     </div>
   </div>
 </section>
