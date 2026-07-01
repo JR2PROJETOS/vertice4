@@ -120,8 +120,44 @@
   @keyframes vfade{to{opacity:1;}}
   .line-anim{stroke-dasharray:400;stroke-dashoffset:400;animation:ldraw 1.6s ease forwards;}
   @keyframes ldraw{to{stroke-dashoffset:0;}}
+  .plot-line.line-anim.flow{stroke-dasharray:6 5;stroke-dashoffset:0;animation:antsFlow 7s linear infinite;}
+  @keyframes antsFlow{to{stroke-dashoffset:-220;}}
+  .origin-pulse{fill:none;stroke:var(--blue-light);stroke-width:2;opacity:0;animation:originPulse 2.6s ease-out infinite;animation-delay:1.4s;}
+  @keyframes originPulse{0%{r:5;opacity:.55;}70%{opacity:0;}100%{r:22;opacity:0;}}
+  .plot-wrap{position:relative;overflow:hidden;}
+  .plot-wrap::after{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(115deg, transparent 35%, rgba(79,138,240,0.35) 50%, transparent 65%);
+    background-size:260% 260%;background-position:-160% -160%;opacity:0;
+    animation:shimmerSweep 5.5s ease-in-out infinite;animation-delay:2.2s;
+  }
+  @keyframes shimmerSweep{0%{background-position:-160% -160%;opacity:0;}8%{opacity:1;}35%{opacity:0;}100%{background-position:160% 160%;opacity:0;}}
+
+  /* HERO ENTRANCE */
+  .hero-copy>*{opacity:0;transform:translateY(16px);animation:heroIn .7s cubic-bezier(.2,.8,.2,1) forwards;}
+  .hero-copy>*:nth-child(1){animation-delay:.05s;}
+  .hero-copy>*:nth-child(2){animation-delay:.16s;}
+  .hero-copy>*:nth-child(3){animation-delay:.27s;}
+  .hero-copy>*:nth-child(4){animation-delay:.38s;}
+  .hero-copy>*:nth-child(5){animation-delay:.49s;}
+  @keyframes heroIn{to{opacity:1;transform:translateY(0);}}
+  .hero .plot-wrap{opacity:0;transform:translateY(16px) scale(.97);animation:heroIn .8s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:.3s;}
+
+  /* SCROLL REVEAL */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1);}
+  .reveal.is-visible{opacity:1;transform:translateY(0);}
+  .reveal-group .reveal-item{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.2,.8,.2,1),transform .6s cubic-bezier(.2,.8,.2,1);}
+  .reveal-group.is-visible .reveal-item{opacity:1;transform:translateY(0);}
+  .reveal-group.is-visible .reveal-item:nth-child(1){transition-delay:.05s;}
+  .reveal-group.is-visible .reveal-item:nth-child(2){transition-delay:.14s;}
+  .reveal-group.is-visible .reveal-item:nth-child(3){transition-delay:.23s;}
+  .reveal-group.is-visible .reveal-item:nth-child(4){transition-delay:.32s;}
+
   @media (prefers-reduced-motion: reduce){
     .vertex-anim,.line-anim{animation:none;opacity:1;stroke-dashoffset:0;}
+    .plot-line.line-anim.flow,.origin-pulse,.plot-wrap::after{animation:none;opacity:0;}
+    .hero-copy>*,.hero .plot-wrap{animation:none;opacity:1;transform:none;}
+    .reveal,.reveal-group .reveal-item{opacity:1;transform:none;transition:none;}
   }
 
   /* SECTION SHARED */
@@ -239,7 +275,7 @@
 
 <section class="hero">
   <div class="wrap hero-grid">
-    <div>
+    <div class="hero-copy">
       <div class="eyebrow">SIG-RI · Dourados-MS</div>
       <h1>Cada vértice do seu imóvel, <em>com endereço jurídico certo</em>.</h1>
       <p class="lead">Georreferenciamento e registro imobiliário para loteamentos, condomínios e áreas rurais — do levantamento em campo até a matrícula regularizada, com dados rastreáveis em cada etapa.</p>
@@ -265,6 +301,7 @@
         <line class="plot-line" x1="260" y1="320" x2="280" y2="352" stroke-dasharray="3,3"/>
         <line class="plot-line" x1="110" y1="270" x2="72" y2="290" stroke-dasharray="3,3"/>
 
+        <circle class="origin-pulse" cx="90" cy="120" r="5"/>
         <circle class="vertex-dot vertex-anim origin" cx="90" cy="120" r="5" style="animation-delay:.1s"/>
         <circle class="vertex-dot vertex-anim" cx="250" cy="70" r="5" style="animation-delay:.3s"/>
         <circle class="vertex-dot vertex-anim" cx="330" cy="190" r="5" style="animation-delay:.5s"/>
@@ -293,28 +330,28 @@
 
 <section class="services" id="servicos">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="eyebrow">O que fazemos</div>
       <h2>Quatro frentes, um único processo</h2>
       <p>Cada serviço resolve uma parte do mesmo problema: transformar um imóvel sem descrição precisa em um registro que resiste a contestação.</p>
     </div>
-    <div class="service-grid">
-      <div class="service-card">
+    <div class="service-grid reveal-group">
+      <div class="service-card reveal-item">
         <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
         <h3>Georreferenciamento</h3>
         <p>Levantamento de vértices em campo com precisão SIRGAS 2000 e memorial descritivo pronto para protocolo.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card reveal-item">
         <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M7 2h8l4 4v16H7z"/><path d="M15 2v4h4M9 12h6M9 16h6M9 8h2"/></svg></div>
         <h3>Registro imobiliário</h3>
         <p>Preparação e acompanhamento da documentação até a matrícula ou retificação junto ao cartório.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card reveal-item">
         <div class="service-icon"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 21v-2a5 5 0 015-5h2M14 14h2a5 5 0 015 5v2"/></svg></div>
         <h3>Colaboração</h3>
         <p>Proprietário, analista e cartório acompanham o mesmo processo, sem versões divergentes de planilha ou e-mail perdido.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card reveal-item">
         <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
         <h3>Segurança jurídica</h3>
         <p>Cada etapa fica registrada com número de protocolo, reduzindo o risco de contestação futura sobre limites e área.</p>
@@ -325,25 +362,25 @@
 
 <section id="como-funciona">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="eyebrow">O processo</div>
       <h2>Do levantamento ao registro</h2>
       <p>Quatro etapas em sequência — cada uma só começa quando a anterior está validada.</p>
     </div>
-    <div class="process-list">
-      <div class="process-item">
+    <div class="process-list reveal-group">
+      <div class="process-item reveal-item">
         <div class="process-num">01</div>
         <div><h3>Levantamento em campo</h3><p>Coleta dos vértices do imóvel com equipamento GNSS e conferência dos limites com o proprietário ou responsável técnico.</p></div>
       </div>
-      <div class="process-item">
+      <div class="process-item reveal-item">
         <div class="process-num">02</div>
         <div><h3>Processamento e cálculo</h3><p>Ajuste das coordenadas, cálculo de área e perímetro, e verificação de sobreposição com imóveis vizinhos.</p></div>
       </div>
-      <div class="process-item">
+      <div class="process-item reveal-item">
         <div class="process-num">03</div>
         <div><h3>Memorial descritivo</h3><p>Elaboração do memorial e da planta conforme as normas técnicas exigidas pelo cartório de registro de imóveis.</p></div>
       </div>
-      <div class="process-item">
+      <div class="process-item reveal-item">
         <div class="process-num">04</div>
         <div><h3>Protocolo e acompanhamento</h3><p>Envio da documentação e acompanhamento do processo até a confirmação da matrícula ou retificação.</p></div>
       </div>
@@ -353,24 +390,24 @@
 
 <section class="about" id="sobre">
   <div class="wrap">
-    <div>
+    <div class="reveal">
       <div class="eyebrow">Quem faz</div>
       <h2>Arquitetura, urbanismo e sistemas, na mesma mesa</h2>
       <p>A Vértice4 une arquitetura, geografia e sistemas aplicados à aprovação de projetos e à regularização fundiária em Dourados e região.</p>
       <p>Nossa equipe reúne arquitetos e geógrafos, que trabalham de forma integrada para entregar soluções técnicas completas.</p>
       <p>Atendimento técnico direto, sem intermediários comerciais: do estudo inicial ao registro, acompanhamos cada etapa do processo com responsabilidade e precisão.</p>
     </div>
-    <div class="about-stats">
-      <div class="stat"><b>Arquitetos</b><span>projetos, aprovação e visão técnica</span></div>
-      <div class="stat"><b>SIRGAS 2000</b><span>referência geodésica oficial</span></div>
-      <div class="stat"><b>Geógrafos</b><span>cartografia, território e base cadastral</span></div>
-      <div class="stat"><b>Dourados e região</b><span>atuação local com visão para o Brasil</span></div>
+    <div class="about-stats reveal-group">
+      <div class="stat reveal-item"><b>Arquitetos</b><span>projetos, aprovação e visão técnica</span></div>
+      <div class="stat reveal-item"><b>SIRGAS 2000</b><span>referência geodésica oficial</span></div>
+      <div class="stat reveal-item"><b>Geógrafos</b><span>cartografia, território e base cadastral</span></div>
+      <div class="stat reveal-item"><b>Dourados e região</b><span>atuação local com visão para o Brasil</span></div>
     </div>
   </div>
 </section>
 
 <section class="cta-section" id="contato">
-  <div class="wrap">
+  <div class="wrap reveal">
     <div class="eyebrow" style="justify-content:center;">Próximo passo</div>
     <h2>Envie o endereço ou a matrícula do imóvel e receba um diagnóstico inicial.</h2>
     <p>Sem compromisso. Retorno com o levantamento necessário e o prazo estimado até o registro.</p>
@@ -388,6 +425,33 @@
     <div>Território · Dados · Confiança</div>
   </div>
 </footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var targets = document.querySelectorAll('.reveal, .reveal-group');
+  if(reduced){
+    targets.forEach(function(el){ el.classList.add('is-visible'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.15, rootMargin:'0px 0px -60px 0px'});
+  targets.forEach(function(el){ io.observe(el); });
+
+  var outline = document.querySelector('.plot-line.line-anim');
+  if(outline){
+    outline.addEventListener('animationend', function(){
+      outline.classList.add('flow');
+    }, {once:true});
+  }
+})();
+</script>
 
 </body>
 </html>
