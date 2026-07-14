@@ -77,17 +77,20 @@
   /* MOBILE DRAWER */
   @media(max-width:860px){
     .nav-toggle{display:flex;align-items:center;justify-content:center;}
+    header{position:relative;}
+    nav{flex-wrap:wrap;padding:14px 24px;gap:0;}
     .nav-links{
-      display:none !important;flex-direction:column;gap:0;
-      position:fixed;left:0;right:0;top:65px;bottom:0;z-index:999;
+      display:none;flex-direction:column;gap:0;
+      width:100%;order:3;
+      border-top:1px solid var(--line);
+      margin:10px -24px -14px;
+      padding:8px 24px 16px;
       background:var(--bg);
-      padding:24px 28px;border-top:1px solid var(--line);
-      overflow-y:auto;
     }
-    .nav-links.open{display:flex !important;}
+    .nav-links.open{display:flex;}
     .nav-links a{
-      padding:18px 0;border-bottom:1px solid var(--line);
-      font-size:1.08rem;font-weight:500;opacity:1;color:var(--navy);
+      padding:16px 0;border-bottom:1px solid var(--line);
+      font-size:1.05rem;font-weight:500;opacity:1;color:var(--navy);
     }
     .nav-links a:last-child{border-bottom:none;}
     .nav-toggle.open .icon-menu{display:none;}
