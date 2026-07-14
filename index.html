@@ -274,6 +274,40 @@
   .stat span{font-size:0.85rem;color:#8FA1C2;}
 
   /* CTA / CONTACT */
+  /* CNM TOOL */
+  .cnm-section{background:var(--navy);padding:72px 0;}
+  .cnm-section .eyebrow{color:var(--blue-light);}
+  .cnm-section .eyebrow::before{background:var(--blue-light);}
+  .cnm-section h2{font-family:var(--display);font-size:clamp(1.5rem,2.5vw,2.1rem);font-weight:700;color:var(--white);letter-spacing:-0.01em;margin-bottom:10px;}
+  .cnm-section .section-head p{color:#B8C4DA;font-size:0.95rem;max-width:520px;line-height:1.65;}
+  .cnm-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:36px 40px;max-width:720px;}
+  .cnm-form-grid{display:grid;grid-template-columns:2fr 1fr 1.4fr;gap:16px;margin-bottom:24px;}
+  .cnm-field label{display:block;font-size:0.72rem;font-weight:600;color:#9EB0CF;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;}
+  .cnm-field input{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:11px 14px;font-size:0.95rem;color:var(--white);font-family:var(--mono);letter-spacing:0.04em;transition:border-color .2s,background .2s;outline:none;}
+  .cnm-field input::placeholder{color:rgba(255,255,255,0.25);}
+  .cnm-field input:focus{border-color:var(--blue-light);background:rgba(255,255,255,0.12);}
+  .cnm-resultado{display:flex;align-items:center;gap:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:20px 24px;min-height:72px;transition:border-color .3s;}
+  .cnm-resultado.ativo{border-color:rgba(52,211,153,0.4);}
+  .cnm-display{flex:1;}
+  .cnm-rlabel{font-size:0.7rem;font-weight:600;color:#9EB0CF;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;}
+  .cnm-valor{font-family:var(--mono);font-size:1.3rem;font-weight:600;color:rgba(255,255,255,0.25);letter-spacing:0.08em;transition:color .3s;}
+  .cnm-valor.ativo{color:#34D399;}
+  .cnm-valor .dv{color:var(--blue-light);}
+  .cnm-copy{background:none;border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:7px 12px;font-size:0.78rem;color:#9EB0CF;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap;font-family:var(--body);}
+  .cnm-copy:hover:not(:disabled){border-color:var(--blue-light);color:var(--white);}
+  .cnm-copy:disabled{opacity:.3;cursor:not-allowed;}
+  .btn-onr{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:var(--white);padding:10px 20px;border-radius:8px;font-size:0.88rem;font-weight:600;transition:background .2s,opacity .2s;white-space:nowrap;border:none;cursor:pointer;font-family:var(--body);text-decoration:none;}
+  .btn-onr:hover:not([aria-disabled="true"]){background:var(--blue-light);}
+  .btn-onr[aria-disabled="true"]{opacity:.3;pointer-events:none;}
+  .cnm-aviso{margin-top:16px;font-size:0.78rem;color:#9EB0CF;display:flex;align-items:center;gap:6px;}
+  .cnm-aviso::before{content:'★';font-size:0.7rem;color:var(--blue-light);}
+  @media(max-width:640px){
+    .cnm-form-grid{grid-template-columns:1fr 1fr;}
+    .cnm-field:first-child{grid-column:span 2;}
+    .cnm-resultado{flex-direction:column;align-items:flex-start;gap:14px;}
+    .cnm-card{padding:24px 20px;}
+  }
+
   .cta-section{padding:96px 0;text-align:center;}
   .cta-section h2{font-size:clamp(1.7rem,3vw,2.4rem);max-width:640px;margin:0 auto 16px;}
   .cta-section p{color:#5A6578;max-width:480px;margin:0 auto 34px;}
@@ -496,6 +530,47 @@
   </div>
 </section>
 
+<section class="cnm-section reveal">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Ferramenta gratuita</div>
+      <h2>Calcule o CNM do seu imóvel</h2>
+      <p>Informe o CNS do cartório, o livro e o número da matrícula. O sistema gera o Código Nacional da Matrícula e habilita a consulta direta no portal do ONR.</p>
+    </div>
+    <div class="cnm-card">
+      <div class="cnm-form-grid">
+        <div class="cnm-field">
+          <label>CNS — Código da Serventia</label>
+          <input id="cnm-cns" type="text" placeholder="062661" maxlength="6" inputmode="numeric" />
+        </div>
+        <div class="cnm-field">
+          <label>Livro</label>
+          <input id="cnm-livro" type="text" placeholder="2" maxlength="4" inputmode="numeric" />
+        </div>
+        <div class="cnm-field">
+          <label>Nº da Matrícula</label>
+          <input id="cnm-num" type="text" placeholder="11803" maxlength="7" inputmode="numeric" />
+        </div>
+      </div>
+      <div class="cnm-resultado" id="cnm-resultado">
+        <div class="cnm-display">
+          <div class="cnm-rlabel">CNM gerado</div>
+          <div class="cnm-valor" id="cnm-valor">——.—.———————-——</div>
+        </div>
+        <button class="cnm-copy" id="cnm-btn-copy" disabled onclick="cnmCopiar()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copiar
+        </button>
+        <a id="cnm-btn-onr" class="btn-onr" href="https://cnm.onr.org.br/index.php" target="_blank" rel="noopener noreferrer" aria-disabled="true" onclick="cnmCopiar()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Consultar no ONR
+        </a>
+      </div>
+      <p class="cnm-aviso">O CNM é calculado pelo padrão CNJ (MOD 97-10 / ISO 7064). Verifique sempre no portal oficial do ONR.</p>
+    </div>
+  </div>
+</section>
+
 <section class="cta-section" id="contato">
   <div class="wrap reveal">
     <div class="eyebrow" style="justify-content:center;">Próximo passo</div>
@@ -535,6 +610,49 @@
     });
   }, {threshold:0.15, rootMargin:'0px 0px -60px 0px'});
   targets.forEach(function(el){ io.observe(el); });
+
+  // CNM Calculator
+  (function(){
+    function mod97(str){var r=0;for(var i=0;i<str.length;i++){r=(r*10+parseInt(str[i]))%97;}return r;}
+    function calcCNM(cns,livro,num){
+      var c=cns.replace(/\D/g,'').padStart(6,'0').slice(-6);
+      var l=livro.replace(/\D/g,'');
+      var n=num.replace(/\D/g,'').padStart(7,'0').slice(-7);
+      if(!c||!l||l==='0'||!n||n==='0000000') return null;
+      var dv=98-mod97(c+l+n+'00');
+      return c+'.'+l+'.'+n+'-'+String(dv).padStart(2,'0');
+    }
+    var cnmAtual=null;
+    function atualizar(){
+      var cns=document.getElementById('cnm-cns').value;
+      var livro=document.getElementById('cnm-livro').value;
+      var num=document.getElementById('cnm-num').value;
+      var cnm=calcCNM(cns,livro,num);
+      cnmAtual=cnm;
+      var valEl=document.getElementById('cnm-valor');
+      var resEl=document.getElementById('cnm-resultado');
+      var copyEl=document.getElementById('cnm-btn-copy');
+      var onrEl=document.getElementById('cnm-btn-onr');
+      if(cnm){
+        var p=cnm.split('-');
+        valEl.innerHTML=p[0]+'-<span class="dv">'+p[1]+'</span>';
+        valEl.classList.add('ativo');resEl.classList.add('ativo');
+        copyEl.disabled=false;onrEl.removeAttribute('aria-disabled');
+      } else {
+        valEl.innerHTML='——.—.———————-——';
+        valEl.classList.remove('ativo');resEl.classList.remove('ativo');
+        copyEl.disabled=true;onrEl.setAttribute('aria-disabled','true');
+      }
+    }
+    ['cnm-cns','cnm-livro','cnm-num'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) el.addEventListener('input',atualizar);
+    });
+    window.cnmCopiar=function(){
+      if(!cnmAtual) return;
+      navigator.clipboard.writeText(cnmAtual).catch(function(){});
+    };
+  })();
 
   var outline = document.querySelector('.plot-line.line-anim');
   if(outline){
