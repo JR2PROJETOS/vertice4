@@ -78,13 +78,13 @@
   @media(max-width:860px){
     .nav-toggle{display:flex;align-items:center;justify-content:center;}
     .nav-links{
-      display:none;flex-direction:column;gap:0;
+      display:none !important;flex-direction:column;gap:0;
       position:fixed;left:0;right:0;top:65px;bottom:0;z-index:999;
       background:var(--bg);
       padding:24px 28px;border-top:1px solid var(--line);
       overflow-y:auto;
     }
-    .nav-links.open{display:flex;}
+    .nav-links.open{display:flex !important;}
     .nav-links a{
       padding:18px 0;border-bottom:1px solid var(--line);
       font-size:1.08rem;font-weight:500;opacity:1;color:var(--navy);
