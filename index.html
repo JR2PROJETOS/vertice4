@@ -567,21 +567,17 @@
     <div class="section-head">
       <div class="eyebrow">Ferramenta gratuita</div>
       <h2>Calcule o CNM do seu imóvel</h2>
-      <p>Informe o CNS do cartório, o livro e o número da matrícula. O sistema gera o Código Nacional da Matrícula e habilita a consulta direta no portal do ONR.</p>
+      <p>Informe o CNS do cartório e o número da matrícula. O sistema gera o Código Nacional da Matrícula (livro 2) e habilita a consulta direta no portal do ONR.</p>
     </div>
     <div class="cnm-card">
-      <div class="cnm-form-grid">
+      <div class="cnm-form-grid" style="grid-template-columns:1.5fr 1.2fr;">
         <div class="cnm-field">
           <label>CNS — Código da Serventia</label>
           <input id="cnm-cns" type="text" placeholder="062661" maxlength="6" inputmode="numeric" />
         </div>
         <div class="cnm-field">
-          <label>Livro</label>
-          <input id="cnm-livro" type="text" placeholder="2" maxlength="4" inputmode="numeric" />
-        </div>
-        <div class="cnm-field">
           <label>Nº da Matrícula</label>
-          <input id="cnm-num" type="text" placeholder="11803" maxlength="7" inputmode="numeric" />
+          <input id="cnm-num" type="text" placeholder="81424" maxlength="7" inputmode="numeric" />
         </div>
       </div>
       <div class="cnm-resultado" id="cnm-resultado">
@@ -665,20 +661,19 @@
   // CNM Calculator
   (function(){
     function mod97(str){var r=0;for(var i=0;i<str.length;i++){r=(r*10+parseInt(str[i]))%97;}return r;}
-    function calcCNM(cns,livro,num){
+    var LIVRO='2';
+    function calcCNM(cns,num){
       var c=cns.replace(/\D/g,'').padStart(6,'0').slice(-6);
-      var l=livro.replace(/\D/g,'');
       var n=num.replace(/\D/g,'').padStart(7,'0').slice(-7);
-      if(!c||!l||l==='0'||!n||n==='0000000') return null;
-      var dv=98-mod97(c+l+n+'00');
-      return c+'.'+l+'.'+n+'-'+String(dv).padStart(2,'0');
+      if(!c||!n||n==='0000000') return null;
+      var dv=98-mod97(c+LIVRO+n+'00');
+      return c+'.'+LIVRO+'.'+n+'-'+String(dv).padStart(2,'0');
     }
     var cnmAtual=null;
     function atualizar(){
       var cns=document.getElementById('cnm-cns').value;
-      var livro=document.getElementById('cnm-livro').value;
       var num=document.getElementById('cnm-num').value;
-      var cnm=calcCNM(cns,livro,num);
+      var cnm=calcCNM(cns,num);
       cnmAtual=cnm;
       var valEl=document.getElementById('cnm-valor');
       var resEl=document.getElementById('cnm-resultado');
@@ -695,7 +690,7 @@
         copyEl.disabled=true;onrEl.setAttribute('aria-disabled','true');
       }
     }
-    ['cnm-cns','cnm-livro','cnm-num'].forEach(function(id){
+    ['cnm-cns','cnm-num'].forEach(function(id){
       var el=document.getElementById(id);
       if(el) el.addEventListener('input',atualizar);
     });
