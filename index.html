@@ -67,7 +67,31 @@
     transition:background .2s;
   }
   .nav-cta:hover{background:var(--blue);}
-  .nav-toggle{display:none;}
+  .nav-toggle{
+    display:none;background:none;border:none;cursor:pointer;
+    padding:6px;color:var(--navy);
+  }
+  .nav-toggle svg{display:block;width:24px;height:24px;}
+  .nav-toggle .icon-close{display:none;}
+
+  /* MOBILE DRAWER */
+  @media(max-width:860px){
+    .nav-toggle{display:flex;align-items:center;justify-content:center;}
+    .nav-links{
+      display:none;flex-direction:column;gap:0;
+      position:fixed;inset:0;top:65px;z-index:40;
+      background:rgba(246,248,251,0.97);backdrop-filter:blur(12px);
+      padding:32px 24px;border-top:1px solid var(--line);
+    }
+    .nav-links.open{display:flex;}
+    .nav-links a{
+      padding:16px 0;border-bottom:1px solid var(--line);
+      font-size:1.05rem;opacity:1;
+    }
+    .nav-links a:last-child{border-bottom:none;}
+    .nav-toggle.open .icon-menu{display:none;}
+    .nav-toggle.open .icon-close{display:block;}
+  }
 
   /* HERO */
   .hero{
@@ -329,7 +353,6 @@
   @media (max-width:860px){
     .hero-grid{grid-template-columns:1fr;}
     .plot-wrap{max-width:420px;margin:0 auto;}
-    .nav-links{display:none;}
     .service-grid{grid-template-columns:repeat(2,1fr);}
     .standards-grid,.lawyer-grid{grid-template-columns:1fr;}
     .lawyer-grid{gap:36px;}
@@ -363,6 +386,10 @@
       <a href="#sobre">Sobre</a>
     </div>
     <a href="#contato" class="nav-cta">Solicitar diagnóstico</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menu" aria-expanded="false">
+      <svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </nav>
 </header>
 
@@ -611,6 +638,25 @@
     });
   }, {threshold:0.15, rootMargin:'0px 0px -60px 0px'});
   targets.forEach(function(el){ io.observe(el); });
+
+  // Hamburguer menu
+  (function(){
+    var btn = document.getElementById('nav-toggle');
+    var links = document.querySelector('.nav-links');
+    if(!btn||!links) return;
+    btn.addEventListener('click', function(){
+      var open = links.classList.toggle('open');
+      btn.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open);
+    });
+    links.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        links.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded','false');
+      });
+    });
+  })();
 
   // CNM Calculator
   (function(){
