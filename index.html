@@ -79,14 +79,15 @@
     .nav-toggle{display:flex;align-items:center;justify-content:center;}
     .nav-links{
       display:none;flex-direction:column;gap:0;
-      position:fixed;inset:0;top:65px;z-index:40;
-      background:rgba(246,248,251,0.97);backdrop-filter:blur(12px);
-      padding:32px 24px;border-top:1px solid var(--line);
+      position:fixed;left:0;right:0;top:65px;bottom:0;z-index:999;
+      background:var(--bg);
+      padding:24px 28px;border-top:1px solid var(--line);
+      overflow-y:auto;
     }
     .nav-links.open{display:flex;}
     .nav-links a{
-      padding:16px 0;border-bottom:1px solid var(--line);
-      font-size:1.05rem;opacity:1;
+      padding:18px 0;border-bottom:1px solid var(--line);
+      font-size:1.08rem;font-weight:500;opacity:1;color:var(--navy);
     }
     .nav-links a:last-child{border-bottom:none;}
     .nav-toggle.open .icon-menu{display:none;}
