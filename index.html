@@ -311,9 +311,20 @@
   .cnm-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:36px 40px;max-width:720px;}
   .cnm-form-grid{display:grid;grid-template-columns:2fr 1fr 1.4fr;gap:16px;margin-bottom:24px;}
   .cnm-field label{display:block;font-size:0.72rem;font-weight:600;color:#9EB0CF;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;}
-  .cnm-field input{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:11px 14px;font-size:0.95rem;color:var(--white);font-family:var(--mono);letter-spacing:0.04em;transition:border-color .2s,background .2s;outline:none;}
+  .cnm-field input{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:11px 14px;font-size:0.95rem;color:var(--white);font-family:var(--body);letter-spacing:0.01em;transition:border-color .2s,background .2s;outline:none;}
   .cnm-field input::placeholder{color:rgba(255,255,255,0.25);}
   .cnm-field input:focus{border-color:var(--blue-light);background:rgba(255,255,255,0.12);}
+  .cnm-field input.mono{font-family:var(--mono);letter-spacing:0.04em;}
+  /* autocomplete */
+  .cnm-ac-wrap{position:relative;}
+  .cnm-ac-list{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#1A2E52;border:1px solid rgba(255,255,255,0.18);border-radius:8px;max-height:220px;overflow-y:auto;z-index:50;display:none;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+  .cnm-ac-list.open{display:block;}
+  .cnm-ac-item{padding:10px 14px;cursor:pointer;font-size:0.88rem;color:#D0DCF0;border-bottom:1px solid rgba(255,255,255,0.07);line-height:1.35;}
+  .cnm-ac-item:last-child{border-bottom:none;}
+  .cnm-ac-item:hover,.cnm-ac-item.active{background:rgba(79,138,240,0.25);color:#fff;}
+  .cnm-ac-item small{display:block;font-size:0.75rem;color:#8FA1C2;margin-top:2px;}
+  .cnm-ac-empty{padding:12px 14px;font-size:0.85rem;color:#8FA1C2;text-align:center;}
+  .cnm-cns-badge{display:none;margin-top:6px;font-family:var(--mono);font-size:0.78rem;color:#34D399;letter-spacing:0.06em;}
   .cnm-resultado{display:flex;align-items:center;gap:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:20px 24px;min-height:72px;transition:border-color .3s;}
   .cnm-resultado.ativo{border-color:rgba(52,211,153,0.4);}
   .cnm-display{flex:1;}
@@ -572,12 +583,16 @@
     <div class="cnm-card">
       <div class="cnm-form-grid" style="grid-template-columns:1.5fr 1.2fr;">
         <div class="cnm-field">
-          <label>CNS — Código da Serventia</label>
-          <input id="cnm-cns" type="text" placeholder="062661" maxlength="6" inputmode="numeric" />
+          <label>Cartório de Registro de Imóveis</label>
+          <div class="cnm-ac-wrap">
+            <input id="cnm-cartorio" type="text" placeholder="Digite o nome ou cidade..." autocomplete="off" />
+            <div class="cnm-ac-list" id="cnm-ac-list"></div>
+          </div>
+          <div class="cnm-cns-badge" id="cnm-cns-badge"></div>
         </div>
         <div class="cnm-field">
           <label>Nº da Matrícula</label>
-          <input id="cnm-num" type="text" placeholder="81424" maxlength="7" inputmode="numeric" />
+          <input id="cnm-num" type="text" placeholder="81424" maxlength="7" inputmode="numeric" class="mono" />
         </div>
       </div>
       <div class="cnm-resultado" id="cnm-resultado">
@@ -660,8 +675,16 @@
 
   // CNM Calculator
   (function(){
-    function mod97(str){var r=0;for(var i=0;i<str.length;i++){r=(r*10+parseInt(str[i]))%97;}return r;}
+    var SB_URL='https://lbfryknxoxtexhoijimm.supabase.co';
+    var SB_KEY='sb_publishable_vIXa7AJ6HcojgsNgDOeZlQ_rpoYv1UL';
     var LIVRO='2';
+    var cnmAtual=null;
+    var cnsAtual='';
+    var debTimer=null;
+    var activeIdx=-1;
+
+    // MOD 97-10
+    function mod97(str){var r=0;for(var i=0;i<str.length;i++){r=(r*10+parseInt(str[i]))%97;}return r;}
     function calcCNM(cns,num){
       var c=cns.replace(/\D/g,'').padStart(6,'0').slice(-6);
       var n=num.replace(/\D/g,'').padStart(7,'0').slice(-7);
@@ -669,11 +692,10 @@
       var dv=98-mod97(c+LIVRO+n+'00');
       return c+'.'+LIVRO+'.'+n+'-'+String(dv).padStart(2,'0');
     }
-    var cnmAtual=null;
+
     function atualizar(){
-      var cns=document.getElementById('cnm-cns').value;
       var num=document.getElementById('cnm-num').value;
-      var cnm=calcCNM(cns,num);
+      var cnm=cnsAtual?calcCNM(cnsAtual,num):null;
       cnmAtual=cnm;
       var valEl=document.getElementById('cnm-valor');
       var resEl=document.getElementById('cnm-resultado');
@@ -690,10 +712,80 @@
         copyEl.disabled=true;onrEl.setAttribute('aria-disabled','true');
       }
     }
-    ['cnm-cns','cnm-num'].forEach(function(id){
-      var el=document.getElementById(id);
-      if(el) el.addEventListener('input',atualizar);
+
+    // Autocomplete
+    function buscarCartorios(q){
+      var url=SB_URL+'/rest/v1/cartorios_registro_imoveis?select=cns,nome,municipio,uf&or=(nome.ilike.*'+encodeURIComponent(q)+'*,municipio.ilike.*'+encodeURIComponent(q)+'*)&ativo=eq.true&order=uf,municipio,nome&limit=12';
+      return fetch(url,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}).then(function(r){return r.json();});
+    }
+
+    function renderLista(items){
+      var list=document.getElementById('cnm-ac-list');
+      list.innerHTML='';
+      activeIdx=-1;
+      if(!items||!items.length){
+        list.innerHTML='<div class="cnm-ac-empty">Nenhum cartório encontrado</div>';
+        list.classList.add('open');
+        return;
+      }
+      items.forEach(function(item,i){
+        var div=document.createElement('div');
+        div.className='cnm-ac-item';
+        div.innerHTML=item.nome+'<small>'+item.municipio+' · '+item.uf+' · CNS '+item.cns+'</small>';
+        div.addEventListener('mousedown',function(e){
+          e.preventDefault();
+          selecionarCartorio(item);
+        });
+        list.appendChild(div);
+      });
+      list.classList.add('open');
+    }
+
+    function selecionarCartorio(item){
+      var inp=document.getElementById('cnm-cartorio');
+      inp.value=item.nome+' — '+item.municipio+'/'+item.uf;
+      cnsAtual=item.cns;
+      var badge=document.getElementById('cnm-cns-badge');
+      badge.textContent='CNS: '+item.cns;
+      badge.style.display='block';
+      fecharLista();
+      atualizar();
+    }
+
+    function fecharLista(){
+      var list=document.getElementById('cnm-ac-list');
+      list.classList.remove('open');
+      activeIdx=-1;
+    }
+
+    var inp=document.getElementById('cnm-cartorio');
+    inp.addEventListener('input',function(){
+      var q=this.value.trim();
+      cnsAtual='';
+      document.getElementById('cnm-cns-badge').style.display='none';
+      atualizar();
+      clearTimeout(debTimer);
+      if(q.length<2){fecharLista();return;}
+      debTimer=setTimeout(function(){
+        buscarCartorios(q).then(renderLista).catch(function(){fecharLista();});
+      },280);
     });
+
+    inp.addEventListener('keydown',function(e){
+      var list=document.getElementById('cnm-ac-list');
+      var items=list.querySelectorAll('.cnm-ac-item');
+      if(!items.length) return;
+      if(e.key==='ArrowDown'){e.preventDefault();activeIdx=Math.min(activeIdx+1,items.length-1);}
+      else if(e.key==='ArrowUp'){e.preventDefault();activeIdx=Math.max(activeIdx-1,0);}
+      else if(e.key==='Enter'&&activeIdx>=0){e.preventDefault();items[activeIdx].dispatchEvent(new Event('mousedown'));}
+      else if(e.key==='Escape'){fecharLista();return;}
+      items.forEach(function(el,i){el.classList.toggle('active',i===activeIdx);});
+    });
+
+    inp.addEventListener('blur',function(){setTimeout(fecharLista,150);});
+
+    document.getElementById('cnm-num').addEventListener('input',atualizar);
+
     window.cnmCopiar=function(){
       if(!cnmAtual) return;
       navigator.clipboard.writeText(cnmAtual).catch(function(){});
